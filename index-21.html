@@ -1,0 +1,1140 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1b232e">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Calendário de Turnos">
+<title>Calendário de Turnos Refusão</title>
+<style>
+*{box-sizing:border-box}
+
+/* ---- Petróleo / Noite (padrão) ---- */
+body{
+  --bg-main:#000000; --card-bg:#0d1414; --card-border:#6fa8a3; --header-border:#6fa8a3; --h1-color:#8fc9c3;
+  --label-warn:#e0b877; --select-warn:#e0b877; --label-accent:#9fcfca; --select-accent:#6fa8a3;
+  --horario-color:#8b98a3; --calhead-color:#6fa8a3; --calnav-border:#6fa8a3; --calnav-color:#9fcfca;
+  --caldow-color:#8b98a3; --calday-bg:#16201f; --calday-color:#c2cdd8;
+  --trabalho-bg:rgba(111,168,163,0.32); --trabalho-color:#d7ece9;
+  --folga-bg:rgba(217,150,135,0.42); --folga-color:#f5ddd4;
+  --hoje-border:#eef1f3; --selecionado-border:#e0b877; --feriado-dot:#cfa8d9; --nota-dot:#e0b877;
+  --legend-color:#8b98a3; --detalhe-trabalho-border:#6fa8a3; --detalhe-folga-border:#d99687;
+  --valor-trabalho-color:#8fc9c3; --valor-folga-color:#d99687; --sub-color:#8b98a3;
+  --feriadonome-color:#ecdcf0; --feriadonome-bg:#241f2a; --feriadonome-border:#cfa8d9; --vazio-color:#8b98a3;
+  --clima-bg:#101a1a; --clima-border:#6fa8a3; --climatemp-color:#c2cdd8; --climadesc-color:#8b98a3; --climaindisp-color:#6f7c87;
+  --notaobs-label-color:#8b98a3; --textarea-border:#6fa8a3; --textarea-bg:#101a1a; --textarea-color:#f2f5f7;
+  --btnlimpar-border:#8b98a3; --btnlimpar-color:#8b98a3; --btnsalvar-bg:#6fa8a3; --btnsalvar-color:#08201d;
+  --salvomsg-color:#8fc9c3; --avisobanner-bg:#132322; --avisobanner-border:#e0b877; --avisobanner-color:#e0b877;
+  margin:0;background:var(--bg-main);color:#f2f5f7;font-family:Arial,Helvetica,sans-serif;min-height:100vh
+}
+
+/* ---- Petróleo / Dia ---- */
+body[data-tema="petroleo"][data-fundo="dia"]{
+  --bg-main:#f4f6f5; --card-bg:#ffffff; --card-border:#4d8f88; --header-border:#4d8f88; --h1-color:#2c6a63;
+  --label-warn:#8a5a1e; --select-warn:#8a5a1e; --label-accent:#2c6a63; --select-accent:#2c6a63;
+  --horario-color:#5a6a68; --calhead-color:#2c6a63; --calnav-border:#4d8f88; --calnav-color:#2c6a63;
+  --caldow-color:#6b7a78; --calday-bg:#eef2f1; --calday-color:#2b3634;
+  --trabalho-bg:#bfe0dc; --trabalho-color:#12302c; --folga-bg:#f0cec5; --folga-color:#4a2018;
+  --hoje-border:#2b3634; --selecionado-border:#c98a2e; --feriado-dot:#9a6fae; --nota-dot:#c98a2e;
+  --legend-color:#5a6a68; --detalhe-trabalho-border:#4d8f88; --detalhe-folga-border:#c98070;
+  --valor-trabalho-color:#2c6a63; --valor-folga-color:#a85b47; --sub-color:#5a6a68;
+  --feriadonome-color:#4a2f52; --feriadonome-bg:#f1e6f5; --feriadonome-border:#b391c2; --vazio-color:#6b7a78;
+  --clima-bg:#eef6f5; --clima-border:#4d8f88; --climatemp-color:#2b3634; --climadesc-color:#5a6a68; --climaindisp-color:#8a9694;
+  --notaobs-label-color:#5a6a68; --textarea-border:#4d8f88; --textarea-bg:#ffffff; --textarea-color:#20302d;
+  --btnlimpar-border:#8a9694; --btnlimpar-color:#5a6a68; --btnsalvar-bg:#4d8f88; --btnsalvar-color:#ffffff;
+  --salvomsg-color:#2c6a63; --avisobanner-bg:#fbf1e0; --avisobanner-border:#c98a2e; --avisobanner-color:#8a5a1e;
+}
+
+/* ---- Original / Noite ---- */
+body[data-tema="original"][data-fundo="noite"]{
+  --bg-main:#000000; --card-bg:#000000; --card-border:#4dabf7; --header-border:#2dd4bf; --h1-color:#2dd4bf;
+  --label-warn:#ffd8ac; --select-warn:#ffa94d; --label-accent:#8ecdfb; --select-accent:#4dabf7;
+  --horario-color:#8b98a3; --calhead-color:#4dabf7; --calnav-border:#4dabf7; --calnav-color:#8ecdfb;
+  --caldow-color:#8b98a3; --calday-bg:#2e3c48; --calday-color:#c2cdd8;
+  --trabalho-bg:rgba(77,171,247,0.32); --trabalho-color:#bfe0fc; --folga-bg:rgba(255,59,48,0.42); --folga-color:#ffd4d1;
+  --hoje-border:#eef1f3; --selecionado-border:#ffa94d; --feriado-dot:#ff8fc4; --nota-dot:#ffa94d;
+  --legend-color:#8b98a3; --detalhe-trabalho-border:#4dabf7; --detalhe-folga-border:#ff3b30;
+  --valor-trabalho-color:#4dabf7; --valor-folga-color:#ff3b30; --sub-color:#8b98a3;
+  --feriadonome-color:#ffe0f0; --feriadonome-bg:#2a1626; --feriadonome-border:#ff8fc4; --vazio-color:#8b98a3;
+  --clima-bg:#0f1822; --clima-border:#4dabf7; --climatemp-color:#c2cdd8; --climadesc-color:#8b98a3; --climaindisp-color:#6f7c87;
+  --notaobs-label-color:#8b98a3; --textarea-border:#4dabf7; --textarea-bg:#111820; --textarea-color:#f2f5f7;
+  --btnlimpar-border:#8b98a3; --btnlimpar-color:#8b98a3; --btnsalvar-bg:#4dabf7; --btnsalvar-color:#0a1622;
+  --salvomsg-color:#2dd4bf; --avisobanner-bg:#1c2430; --avisobanner-border:#ffa94d; --avisobanner-color:#ffa94d;
+}
+
+/* ---- Original / Dia ---- */
+body[data-tema="original"][data-fundo="dia"]{
+  --bg-main:#f5f7fa; --card-bg:#ffffff; --card-border:#2f8fd6; --header-border:#12b8a3; --h1-color:#0e9c8c;
+  --label-warn:#a5670e; --select-warn:#c97f14; --label-accent:#1f6fa8; --select-accent:#1f7fc4;
+  --horario-color:#5a6a78; --calhead-color:#1f7fc4; --calnav-border:#2f8fd6; --calnav-color:#1f7fc4;
+  --caldow-color:#6b7a88; --calday-bg:#eef3f8; --calday-color:#233240;
+  --trabalho-bg:#bfe0fa; --trabalho-color:#0c3958; --folga-bg:#ffd2cc; --folga-color:#7a2018;
+  --hoje-border:#233240; --selecionado-border:#c97f14; --feriado-dot:#d6579a; --nota-dot:#c97f14;
+  --legend-color:#5a6a78; --detalhe-trabalho-border:#2f8fd6; --detalhe-folga-border:#e0574a;
+  --valor-trabalho-color:#1f7fc4; --valor-folga-color:#c94435; --sub-color:#5a6a78;
+  --feriadonome-color:#7a1f4d; --feriadonome-bg:#fbe6f1; --feriadonome-border:#d6579a; --vazio-color:#6b7a88;
+  --clima-bg:#eef6fb; --clima-border:#2f8fd6; --climatemp-color:#233240; --climadesc-color:#5a6a78; --climaindisp-color:#8a99a6;
+  --notaobs-label-color:#5a6a78; --textarea-border:#2f8fd6; --textarea-bg:#ffffff; --textarea-color:#20303e;
+  --btnlimpar-border:#8a99a6; --btnlimpar-color:#5a6a78; --btnsalvar-bg:#2f8fd6; --btnsalvar-color:#ffffff;
+  --salvomsg-color:#0e9c8c; --avisobanner-bg:#fdf1de; --avisobanner-border:#c97f14; --avisobanner-color:#a5670e;
+}
+
+/* ---- Nórdica / Noite ---- */
+body[data-tema="nordica"][data-fundo="noite"]{
+  --bg-main:#000000; --card-bg:#141c26; --card-border:#7fa8d9; --header-border:#5fb8a6; --h1-color:#5fb8a6;
+  --label-warn:#f0c987; --select-warn:#f0c987; --label-accent:#a8c5e8; --select-accent:#7fa8d9;
+  --horario-color:#8b98a3; --calhead-color:#7fa8d9; --calnav-border:#7fa8d9; --calnav-color:#a8c5e8;
+  --caldow-color:#8b98a3; --calday-bg:#1c2530; --calday-color:#c2cdd8;
+  --trabalho-bg:rgba(127,168,217,0.32); --trabalho-color:#d7e4f2; --folga-bg:rgba(217,142,134,0.42); --folga-color:#f5ddd9;
+  --hoje-border:#eef1f3; --selecionado-border:#f0c987; --feriado-dot:#e5b3d0; --nota-dot:#f0c987;
+  --legend-color:#8b98a3; --detalhe-trabalho-border:#7fa8d9; --detalhe-folga-border:#d98e86;
+  --valor-trabalho-color:#8fb4dd; --valor-folga-color:#d98e86; --sub-color:#8b98a3;
+  --feriadonome-color:#f5dced; --feriadonome-bg:#2a2130; --feriadonome-border:#e5b3d0; --vazio-color:#8b98a3;
+  --clima-bg:#161f28; --clima-border:#7fa8d9; --climatemp-color:#c2cdd8; --climadesc-color:#8b98a3; --climaindisp-color:#6f7c87;
+  --notaobs-label-color:#8b98a3; --textarea-border:#7fa8d9; --textarea-bg:#161f28; --textarea-color:#f2f5f7;
+  --btnlimpar-border:#8b98a3; --btnlimpar-color:#8b98a3; --btnsalvar-bg:#7fa8d9; --btnsalvar-color:#0d1620;
+  --salvomsg-color:#5fb8a6; --avisobanner-bg:#212c3b; --avisobanner-border:#f0c987; --avisobanner-color:#f0c987;
+}
+/* ---- Nórdica / Dia ---- */
+body[data-tema="nordica"][data-fundo="dia"]{
+  --bg-main:#f5f7fa; --card-bg:#ffffff; --card-border:#4a7fc4; --header-border:#2c8a76; --h1-color:#2c8a76;
+  --label-warn:#a5760e; --select-warn:#a5760e; --label-accent:#2f5f96; --select-accent:#3f74b8;
+  --horario-color:#5a6a78; --calhead-color:#3f74b8; --calnav-border:#4a7fc4; --calnav-color:#3f74b8;
+  --caldow-color:#6b7a88; --calday-bg:#eef2f8; --calday-color:#233240;
+  --trabalho-bg:#c7d9f2; --trabalho-color:#122c4a; --folga-bg:#f0d2c8; --folga-color:#5a2c1e;
+  --hoje-border:#233240; --selecionado-border:#a5760e; --feriado-dot:#b06fa0; --nota-dot:#a5760e;
+  --legend-color:#5a6a78; --detalhe-trabalho-border:#4a7fc4; --detalhe-folga-border:#c98a70;
+  --valor-trabalho-color:#3f74b8; --valor-folga-color:#a8624a; --sub-color:#5a6a78;
+  --feriadonome-color:#5e2d52; --feriadonome-bg:#f5e6f1; --feriadonome-border:#b06fa0; --vazio-color:#6b7a88;
+  --clima-bg:#eef4fb; --clima-border:#4a7fc4; --climatemp-color:#233240; --climadesc-color:#5a6a78; --climaindisp-color:#8a99a6;
+  --notaobs-label-color:#5a6a78; --textarea-border:#4a7fc4; --textarea-bg:#ffffff; --textarea-color:#20303e;
+  --btnlimpar-border:#8a99a6; --btnlimpar-color:#5a6a78; --btnsalvar-bg:#4a7fc4; --btnsalvar-color:#ffffff;
+  --salvomsg-color:#2c8a76; --avisobanner-bg:#fbf1de; --avisobanner-border:#a5760e; --avisobanner-color:#8a5a1e;
+}
+
+/* ---- Sálvia / Noite ---- */
+body[data-tema="salvia"][data-fundo="noite"]{
+  --bg-main:#000000; --card-bg:#151c15; --card-border:#8caa87; --header-border:#a9c49f; --h1-color:#a9c49f;
+  --label-warn:#d9c085; --select-warn:#d9c085; --label-accent:#b7cdb0; --select-accent:#8caa87;
+  --horario-color:#8b98a3; --calhead-color:#8caa87; --calnav-border:#8caa87; --calnav-color:#b7cdb0;
+  --caldow-color:#8b98a3; --calday-bg:#1c261c; --calday-color:#c2cdd8;
+  --trabalho-bg:rgba(140,170,135,0.32); --trabalho-color:#dcebd9; --folga-bg:rgba(201,143,150,0.42); --folga-color:#f5dde0;
+  --hoje-border:#eef1f3; --selecionado-border:#d9c085; --feriado-dot:#b98fc9; --nota-dot:#d9c085;
+  --legend-color:#8b98a3; --detalhe-trabalho-border:#8caa87; --detalhe-folga-border:#c98f96;
+  --valor-trabalho-color:#a9c49f; --valor-folga-color:#c98f96; --sub-color:#8b98a3;
+  --feriadonome-color:#eddcf0; --feriadonome-bg:#241f2a; --feriadonome-border:#b98fc9; --vazio-color:#8b98a3;
+  --clima-bg:#161f16; --clima-border:#8caa87; --climatemp-color:#c2cdd8; --climadesc-color:#8b98a3; --climaindisp-color:#6f7c87;
+  --notaobs-label-color:#8b98a3; --textarea-border:#8caa87; --textarea-bg:#161f16; --textarea-color:#f2f5f7;
+  --btnlimpar-border:#8b98a3; --btnlimpar-color:#8b98a3; --btnsalvar-bg:#8caa87; --btnsalvar-color:#101a10;
+  --salvomsg-color:#a9c49f; --avisobanner-bg:#20291f; --avisobanner-border:#d9c085; --avisobanner-color:#d9c085;
+}
+/* ---- Sálvia / Dia ---- */
+body[data-tema="salvia"][data-fundo="dia"]{
+  --bg-main:#f5f7f4; --card-bg:#ffffff; --card-border:#5f8a58; --header-border:#4d7847; --h1-color:#4d7847;
+  --label-warn:#8a6a12; --select-warn:#8a6a12; --label-accent:#4d7847; --select-accent:#5f8a58;
+  --horario-color:#5a6a58; --calhead-color:#5f8a58; --calnav-border:#5f8a58; --calnav-color:#4d7847;
+  --caldow-color:#6b7a68; --calday-bg:#eef2ed; --calday-color:#28322a;
+  --trabalho-bg:#cfe3ca; --trabalho-color:#173a17; --folga-bg:#eed0d3; --folga-color:#5e2530;
+  --hoje-border:#28322a; --selecionado-border:#8a6a12; --feriado-dot:#8a5fa0; --nota-dot:#8a6a12;
+  --legend-color:#5a6a58; --detalhe-trabalho-border:#5f8a58; --detalhe-folga-border:#c17c86;
+  --valor-trabalho-color:#4d7847; --valor-folga-color:#a8495a; --sub-color:#5a6a58;
+  --feriadonome-color:#4d2c5e; --feriadonome-bg:#f2e6f5; --feriadonome-border:#8a5fa0; --vazio-color:#6b7a68;
+  --clima-bg:#eef6ec; --clima-border:#5f8a58; --climatemp-color:#28322a; --climadesc-color:#5a6a58; --climaindisp-color:#8a998a;
+  --notaobs-label-color:#5a6a58; --textarea-border:#5f8a58; --textarea-bg:#ffffff; --textarea-color:#20301f;
+  --btnlimpar-border:#8a998a; --btnlimpar-color:#5a6a58; --btnsalvar-bg:#5f8a58; --btnsalvar-color:#ffffff;
+  --salvomsg-color:#4d7847; --avisobanner-bg:#f8f0dc; --avisobanner-border:#8a6a12; --avisobanner-color:#6f5410;
+}
+
+/* ---- Lavanda / Noite ---- */
+body[data-tema="lavanda"][data-fundo="noite"]{
+  --bg-main:#000000; --card-bg:#1a1722; --card-border:#a89fd1; --header-border:#b8aee0; --h1-color:#b8aee0;
+  --label-warn:#e8c88a; --select-warn:#e8c88a; --label-accent:#c7bfe6; --select-accent:#a89fd1;
+  --horario-color:#8b98a3; --calhead-color:#a89fd1; --calnav-border:#a89fd1; --calnav-color:#c7bfe6;
+  --caldow-color:#8b98a3; --calday-bg:#231f30; --calday-color:#c2cdd8;
+  --trabalho-bg:rgba(168,159,209,0.34); --trabalho-color:#e3ddf5; --folga-bg:rgba(224,168,148,0.42); --folga-color:#f7ddd2;
+  --hoje-border:#eef1f3; --selecionado-border:#e8c88a; --feriado-dot:#f0a8c9; --nota-dot:#e8c88a;
+  --legend-color:#8b98a3; --detalhe-trabalho-border:#a89fd1; --detalhe-folga-border:#e0a894;
+  --valor-trabalho-color:#c7bfe6; --valor-folga-color:#e0a894; --sub-color:#8b98a3;
+  --feriadonome-color:#fbe3ef; --feriadonome-bg:#2e1f2a; --feriadonome-border:#f0a8c9; --vazio-color:#8b98a3;
+  --clima-bg:#1d1929; --clima-border:#a89fd1; --climatemp-color:#c2cdd8; --climadesc-color:#8b98a3; --climaindisp-color:#6f7c87;
+  --notaobs-label-color:#8b98a3; --textarea-border:#a89fd1; --textarea-bg:#1d1929; --textarea-color:#f2f5f7;
+  --btnlimpar-border:#8b98a3; --btnlimpar-color:#8b98a3; --btnsalvar-bg:#a89fd1; --btnsalvar-color:#181620;
+  --salvomsg-color:#b8aee0; --avisobanner-bg:#26202f; --avisobanner-border:#e8c88a; --avisobanner-color:#e8c88a;
+}
+/* ---- Lavanda / Dia ---- */
+body[data-tema="lavanda"][data-fundo="dia"]{
+  --bg-main:#f7f6fa; --card-bg:#ffffff; --card-border:#7c6fb0; --header-border:#6a5d9e; --h1-color:#6a5d9e;
+  --label-warn:#9a6a12; --select-warn:#9a6a12; --label-accent:#6a5d9e; --select-accent:#7c6fb0;
+  --horario-color:#5a5868; --calhead-color:#7c6fb0; --calnav-border:#7c6fb0; --calnav-color:#6a5d9e;
+  --caldow-color:#6b6a78; --calday-bg:#f0eef7; --calday-color:#2b2838;
+  --trabalho-bg:#d8d2ef; --trabalho-color:#2c2450; --folga-bg:#f2ddd0; --folga-color:#5e2f1e;
+  --hoje-border:#2b2838; --selecionado-border:#9a6a12; --feriado-dot:#b2568a; --nota-dot:#9a6a12;
+  --legend-color:#5a5868; --detalhe-trabalho-border:#7c6fb0; --detalhe-folga-border:#c98a70;
+  --valor-trabalho-color:#6a5d9e; --valor-folga-color:#a8624a; --sub-color:#5a5868;
+  --feriadonome-color:#5e2c48; --feriadonome-bg:#f7e6f0; --feriadonome-border:#b2568a; --vazio-color:#6b6a78;
+  --clima-bg:#f2effa; --clima-border:#7c6fb0; --climatemp-color:#2b2838; --climadesc-color:#5a5868; --climaindisp-color:#8a8996;
+  --notaobs-label-color:#5a5868; --textarea-border:#7c6fb0; --textarea-bg:#ffffff; --textarea-color:#241f38;
+  --btnlimpar-border:#8a8996; --btnlimpar-color:#5a5868; --btnsalvar-bg:#7c6fb0; --btnsalvar-color:#ffffff;
+  --salvomsg-color:#6a5d9e; --avisobanner-bg:#faf1de; --avisobanner-border:#9a6a12; --avisobanner-color:#7a5410;
+}
+
+/* ---- Areia quente / Noite ---- */
+body[data-tema="areia"][data-fundo="noite"]{
+  --bg-main:#000000; --card-bg:#1c1712; --card-border:#b0a377; --header-border:#d9c79a; --h1-color:#d9c79a;
+  --label-warn:#e6d1a3; --select-warn:#e6d1a3; --label-accent:#cabd97; --select-accent:#b0a377;
+  --horario-color:#8b98a3; --calhead-color:#b0a377; --calnav-border:#b0a377; --calnav-color:#cabd97;
+  --caldow-color:#8b98a3; --calday-bg:#241e17; --calday-color:#c2cdd8;
+  --trabalho-bg:rgba(176,163,119,0.34); --trabalho-color:#ece4cd; --folga-bg:rgba(193,124,102,0.42); --folga-color:#f5d9d0;
+  --hoje-border:#eef1f3; --selecionado-border:#e6d1a3; --feriado-dot:#c98fae; --nota-dot:#e6d1a3;
+  --legend-color:#8b98a3; --detalhe-trabalho-border:#b0a377; --detalhe-folga-border:#c17c66;
+  --valor-trabalho-color:#cabd97; --valor-folga-color:#c17c66; --sub-color:#8b98a3;
+  --feriadonome-color:#f5ddec; --feriadonome-bg:#2a1f26; --feriadonome-border:#c98fae; --vazio-color:#8b98a3;
+  --clima-bg:#1f1912; --clima-border:#b0a377; --climatemp-color:#c2cdd8; --climadesc-color:#8b98a3; --climaindisp-color:#6f7c87;
+  --notaobs-label-color:#8b98a3; --textarea-border:#b0a377; --textarea-bg:#1f1912; --textarea-color:#f2f5f7;
+  --btnlimpar-border:#8b98a3; --btnlimpar-color:#8b98a3; --btnsalvar-bg:#b0a377; --btnsalvar-color:#1a1611;
+  --salvomsg-color:#d9c79a; --avisobanner-bg:#2c2418; --avisobanner-border:#e6d1a3; --avisobanner-color:#e6d1a3;
+}
+/* ---- Areia quente / Dia ---- */
+body[data-tema="areia"][data-fundo="dia"]{
+  --bg-main:#faf7f2; --card-bg:#ffffff; --card-border:#8a7a4a; --header-border:#7a6a3a; --h1-color:#7a6a3a;
+  --label-warn:#9a5f10; --select-warn:#9a5f10; --label-accent:#7a6a3a; --select-accent:#8a7a4a;
+  --horario-color:#6a6050; --calhead-color:#8a7a4a; --calnav-border:#8a7a4a; --calnav-color:#7a6a3a;
+  --caldow-color:#7a7060; --calday-bg:#f2eee4; --calday-color:#332c22;
+  --trabalho-bg:#e0d6b6; --trabalho-color:#3a3018; --folga-bg:#e8c4b4; --folga-color:#5e2e1c;
+  --hoje-border:#332c22; --selecionado-border:#9a5f10; --feriado-dot:#a8628a; --nota-dot:#9a5f10;
+  --legend-color:#6a6050; --detalhe-trabalho-border:#8a7a4a; --detalhe-folga-border:#b8664c;
+  --valor-trabalho-color:#7a6a3a; --valor-folga-color:#a04e34; --sub-color:#6a6050;
+  --feriadonome-color:#5e2c48; --feriadonome-bg:#f5e6ef; --feriadonome-border:#a8628a; --vazio-color:#7a7060;
+  --clima-bg:#f5f1e8; --clima-border:#8a7a4a; --climatemp-color:#332c22; --climadesc-color:#6a6050; --climaindisp-color:#948a78;
+  --notaobs-label-color:#6a6050; --textarea-border:#8a7a4a; --textarea-bg:#ffffff; --textarea-color:#302a1e;
+  --btnlimpar-border:#948a78; --btnlimpar-color:#6a6050; --btnsalvar-bg:#8a7a4a; --btnsalvar-color:#ffffff;
+  --salvomsg-color:#7a6a3a; --avisobanner-bg:#f7ecd8; --avisobanner-border:#9a5f10; --avisobanner-color:#7a4a0c;
+}
+
+main{max-width:760px;margin:auto;padding:16px}
+
+.card{background:var(--card-bg);border:2px solid var(--card-border);border-radius:18px;padding:20px;margin:14px 0}
+
+.header-card{display:flex;flex-direction:column;align-items:center;gap:6px;border-color:var(--header-border);padding:14px 12px}
+.header-row{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;row-gap:8px;column-gap:10px;width:100%}
+h1{font-size:clamp(15px,4vw,19px);margin:0 0 2px;color:var(--h1-color);letter-spacing:.02em;text-align:center}
+
+.turma-bolha{display:flex;align-items:center;gap:4px;flex-shrink:0}
+.turma-bolha span{font-size:12px;color:var(--label-warn);font-weight:700;white-space:nowrap}
+.turma-bolha select{padding:4px 8px;font-size:14px;border-radius:8px;border:none;background:transparent;color:var(--select-warn);font-weight:800;cursor:pointer}
+.turno-bolha{display:flex;align-items:center;gap:4px;flex-shrink:0}
+.turno-bolha span{font-size:12px;color:var(--label-accent);font-weight:700;white-space:nowrap}
+.turno-bolha select{padding:4px 8px;font-size:14px;border-radius:8px;border:none;background:transparent;color:var(--select-accent);font-weight:800;cursor:pointer}
+.tema-bolha{display:flex;align-items:center;gap:4px;flex-shrink:0}
+.tema-bolha span{font-size:12px;color:var(--label-accent);font-weight:700;white-space:nowrap}
+.tema-bolha select{padding:4px 8px;font-size:14px;border-radius:8px;border:none;background:transparent;color:var(--select-accent);font-weight:800;cursor:pointer}
+.fundo-toggle{width:auto;flex-shrink:0;padding:5px 9px;font-size:14px;background:transparent;border:2px solid var(--card-border);color:var(--h1-color);border-radius:10px;cursor:pointer;line-height:1}
+.horario-info{width:100%;text-align:center;font-size:12px;color:var(--horario-color);margin-top:2px}
+
+.cal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.cal-head h2{margin:0;text-transform:capitalize;color:var(--calhead-color);font-size:16px}
+.cal-nav{display:flex;gap:8px}
+.cal-nav button{width:auto;margin:0;padding:8px 14px;font-size:16px;background:transparent;border:2px solid var(--calnav-border);color:var(--calnav-color);border-radius:12px}
+
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.cal-dow{font-size:11px;color:var(--caldow-color);text-align:center;padding-bottom:4px;font-weight:700}
+.cal-day{position:relative;aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:10px;font-size:13px;color:var(--calday-color);background:var(--calday-bg);cursor:pointer}
+.cal-day.empty{visibility:hidden;cursor:default}
+.cal-day.trabalho{background:var(--trabalho-bg);color:var(--trabalho-color);font-weight:700}
+.cal-day.folga{background:var(--folga-bg);color:var(--folga-color);font-weight:700}
+.cal-day.hoje{border:2px solid var(--hoje-border)}
+.cal-day.selecionado{border:2px solid var(--selecionado-border)}
+.cal-day.feriado::after{content:'';position:absolute;top:4px;right:4px;width:7px;height:7px;border-radius:50%;background:var(--feriado-dot)}
+.cal-day.com-nota::before{content:'📌';position:absolute;bottom:1px;left:1px;font-size:9px;line-height:1}
+.cal-day .clima-ico{position:absolute;top:2px;left:3px;font-size:11px;line-height:1;filter:drop-shadow(0 0 1px rgba(0,0,0,.6))}
+
+.legend{display:flex;gap:10px;margin-top:14px;font-size:12px;color:var(--legend-color);flex-wrap:wrap;justify-content:center}
+.legend span{display:flex;align-items:center;gap:6px}
+.dot{width:9px;height:9px;border-radius:3px}
+.dot.trabalho{background:var(--valor-trabalho-color)}
+.dot.folga{background:var(--valor-folga-color)}
+.dot.feriado{background:var(--feriado-dot);border-radius:50%}
+
+.detalhe{text-align:center;padding:16px}
+.detalhe.trabalho{border-color:var(--detalhe-trabalho-border)}
+.detalhe.folga{border-color:var(--detalhe-folga-border)}
+.detalhe .valor{font-size:clamp(18px,5vw,24px);font-weight:900}
+.detalhe .valor.trabalho{color:var(--valor-trabalho-color)}
+.detalhe .valor.folga{color:var(--valor-folga-color)}
+.detalhe .sub{color:var(--sub-color);font-size:13px;margin-top:4px;text-transform:capitalize}
+.detalhe .feriado-nome{margin-top:8px;color:var(--feriadonome-color);background:var(--feriadonome-bg);border:2px solid var(--feriadonome-border);border-radius:12px;padding:8px 12px;font-size:13px;font-weight:700}
+.detalhe .vazio{color:var(--vazio-color);font-size:13px}
+.detalhe .clima{margin-top:10px;display:flex;align-items:center;justify-content:center;gap:10px;background:var(--clima-bg);border:2px solid var(--clima-border);border-radius:12px;padding:8px 14px}
+.detalhe .clima .clima-ico-grande{font-size:26px}
+.detalhe .clima .clima-temp{font-size:15px;color:var(--climatemp-color);font-weight:700}
+.detalhe .clima .clima-desc{font-size:12px;color:var(--climadesc-color)}
+.detalhe .clima-indisponivel{margin-top:10px;font-size:11px;color:var(--climaindisp-color)}
+.obs-secao{margin-top:14px;text-align:left}
+.obs-secao .obs-titulo{font-size:12px;color:var(--notaobs-label-color);margin-bottom:8px;font-weight:700}
+.obs-secao .obs-vazio{font-size:13px;color:var(--vazio-color);margin-bottom:10px}
+.obs-secao .obs-item{background:var(--calday-bg);border-radius:12px;padding:12px;margin-bottom:10px}
+.obs-secao .obs-texto{font-size:14px;color:var(--textarea-color);white-space:pre-wrap;word-break:break-word}
+.obs-secao .obs-foto{max-width:100%;max-height:200px;border-radius:10px;border:2px solid var(--textarea-border);display:block;margin:8px auto 0}
+.obs-secao .obs-acoes{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;justify-content:center}
+.obs-secao .obs-acoes button{width:auto;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;background:transparent;border:2px solid var(--textarea-border);color:var(--notaobs-label-color)}
+.obs-secao .obs-acoes .btn-excluir{border-color:var(--valor-folga-color);color:var(--valor-folga-color)}
+.obs-secao .obs-confirmar-texto{font-size:13px;color:var(--valor-folga-color);font-weight:700;margin-top:6px}
+.obs-secao .obs-editando textarea{width:100%;min-height:64px;padding:10px 12px;border-radius:12px;border:2px solid var(--textarea-border);background:var(--textarea-bg);color:var(--textarea-color);font-family:inherit;font-size:14px;resize:vertical}
+.obs-secao .nota-anexo{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.obs-secao .nota-anexo button{width:auto;padding:8px 12px;font-size:12px;font-weight:700;cursor:pointer;background:transparent;border:2px solid var(--textarea-border);color:var(--notaobs-label-color)}
+.obs-secao .anexo-nome{font-size:12px;color:var(--notaobs-label-color);margin-top:6px;word-break:break-all}
+.obs-secao .nota-acoes{display:flex;gap:8px;margin-top:10px;justify-content:center}
+.obs-secao .nota-acoes button{width:auto;padding:8px 16px;font-size:13px;font-weight:700;cursor:pointer}
+.obs-secao .btn-salvar{background:var(--btnsalvar-bg);color:var(--btnsalvar-color)}
+.obs-secao .btn-limpar{background:transparent;border:2px solid var(--btnlimpar-border);color:var(--btnlimpar-color)}
+.obs-secao .btn-nova-obs{width:100%;padding:10px;font-size:13px;font-weight:700;cursor:pointer;background:transparent;border:2px dashed var(--textarea-border);color:var(--notaobs-label-color);border-radius:12px;margin-top:4px}
+.obs-secao .salvo-msg{font-size:12px;color:var(--salvomsg-color);margin-top:6px;text-align:center;min-height:16px}
+
+.aviso-footer{max-width:760px;margin:0 auto;padding:0 16px 22px;display:flex;flex-direction:column;gap:8px}
+.aviso-banner{display:flex;align-items:center;justify-content:center;gap:10px;background:var(--avisobanner-bg);border:2px solid var(--avisobanner-border);border-radius:16px;padding:12px 16px;color:var(--avisobanner-color);font-size:13px;font-weight:600;text-align:left;min-width:0;width:100%;font-family:inherit;cursor:pointer}
+.aviso-banner span:last-child{min-width:0;overflow-wrap:anywhere;word-break:break-word}
+.aviso-banner .aviso-icone{font-size:18px;flex-shrink:0}
+button{border:none;border-radius:14px}
+
+.novidades-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.65);display:flex;align-items:center;justify-content:center;padding:20px;z-index:999}
+.novidades-overlay[hidden]{display:none}
+.novidades-overlay::before{content:'NOVA ATUALIZAÇÃO';position:absolute;top:14px;left:0;right:0;text-align:center;color:#fff;font-weight:900;font-size:15px;letter-spacing:.06em}
+.novidades-card{max-width:360px;width:100%;background:var(--card-bg);border:2px solid var(--card-border);border-radius:18px;padding:22px 20px;text-align:center}
+.novidades-card h3{margin:0 0 14px;color:var(--h1-color);font-size:17px}
+.novidades-card ul{text-align:left;margin:0 0 18px;padding-left:18px;color:var(--calday-color);font-size:13.5px;line-height:1.6}
+.novidades-card li{margin-bottom:6px}
+.novidades-card button{border:none;border-radius:14px;background:var(--btnsalvar-bg);color:var(--btnsalvar-color);font-weight:800;font-size:14px;padding:10px 28px;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="novidades-overlay" id="novidadesOverlay" hidden>
+  <div class="novidades-card">
+    <h3>📋 O que mudou</h3>
+    <ul id="novidadesLista"></ul>
+    <button type="button" id="btnFecharNovidades">ENTENDI</button>
+  </div>
+</div>
+<main>
+
+<div class="card header-card">
+<h1>CALENDÁRIO DE TURNOS REFUSÃO</h1>
+<div class="header-row">
+<div class="turno-bolha">
+  <span>Turno</span>
+  <select id="turno">
+    <option value="A">A</option>
+    <option value="B">B</option>
+    <option value="C" selected>C</option>
+  </select>
+</div>
+<div class="turma-bolha">
+  <span>Número</span>
+  <select id="turma">
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+  </select>
+</div>
+<div class="tema-bolha">
+  <span>Cor</span>
+  <select id="tema">
+    <option value="original">Original</option>
+    <option value="petroleo" selected>Petróleo</option>
+    <option value="nordica">Nórdica</option>
+    <option value="salvia">Sálvia</option>
+    <option value="lavanda">Lavanda</option>
+    <option value="areia">Areia</option>
+  </select>
+</div>
+<button type="button" class="fundo-toggle" id="fundoToggle" title="Alternar dia/noite">🌙</button>
+</div>
+<div class="horario-info" id="horarioInfo"></div>
+</div>
+
+<div class="card">
+<div class="cal-head">
+  <h2 id="calTitle">—</h2>
+  <div class="cal-nav">
+    <button id="prevMonth">‹</button>
+    <button id="nextMonth">›</button>
+  </div>
+</div>
+<div class="cal-grid" id="calGrid"></div>
+<div class="legend">
+  <span><i class="dot trabalho"></i>Trabalho</span>
+  <span><i class="dot folga"></i>Folga</span>
+  <span><i class="dot feriado"></i>Feriado</span>
+  <span>📌 Obs:</span>
+</div>
+</div>
+
+<div class="card detalhe" id="detalhe">
+  <div class="vazio">Toque em um dia para ver os detalhes</div>
+</div>
+
+</main>
+<div class="aviso-footer" id="avisoFooter"></div>
+
+<script>
+// Âncora: 25/07/2026 (sábado) = 1º dia de folga da turma C1 (posição 7 de um ciclo de 8: 6 trabalho + 2 folga)
+const ANCHOR = new Date(2026, 6, 25);
+const ANCHOR_POS_C1 = 7;
+
+// Calcula a data da Páscoa (algoritmo de Gauss/anônimo) para qualquer ano
+function calcularPascoa(ano){
+  const a = ano % 19;
+  const b = Math.floor(ano / 100);
+  const c = ano % 100;
+  const d = Math.floor(b / 4);
+  const e = b % 4;
+  const f = Math.floor((b + 8) / 25);
+  const g = Math.floor((b - f + 1) / 3);
+  const h = (19*a + b - d - g + 15) % 30;
+  const i = Math.floor(c / 4);
+  const k = c % 4;
+  const l = (32 + 2*e + 2*i - h - k) % 7;
+  const m = Math.floor((a + 11*h + 22*l) / 451);
+  const mes = Math.floor((h + l - 7*m + 114) / 31); // 3=março, 4=abril
+  const dia = ((h + l - 7*m + 114) % 31) + 1;
+  return new Date(ano, mes - 1, dia);
+}
+
+function somarDias(data, dias){
+  const d = new Date(data);
+  d.setDate(d.getDate() + dias);
+  return d;
+}
+
+function feriadosDoAno(ano){
+  const pascoa = calcularPascoa(ano);
+  const carnavalSegunda = somarDias(pascoa, -48);
+  const carnavalTerca = somarDias(pascoa, -47);
+  const sextaSanta = somarDias(pascoa, -2);
+  const corpusChristi = somarDias(pascoa, 60);
+
+  const lista = {};
+  lista[dateKey(new Date(ano,0,1))]   = 'Confraternização Universal';
+  lista[dateKey(carnavalSegunda)]     = 'Carnaval (segunda)';
+  lista[dateKey(carnavalTerca)]       = 'Carnaval (terça)';
+  lista[dateKey(sextaSanta)]          = 'Sexta-feira Santa';
+  lista[dateKey(new Date(ano,3,21))]  = 'Tiradentes';
+  lista[dateKey(new Date(ano,4,1))]   = 'Dia do Trabalho';
+  lista[dateKey(new Date(ano,4,13))]  = 'Festa de São Benedito (municipal)';
+  lista[dateKey(corpusChristi)]       = 'Corpus Christi';
+  lista[dateKey(new Date(ano,8,7))]   = 'Independência do Brasil';
+  lista[dateKey(new Date(ano,9,12))]  = 'Nossa Senhora Aparecida';
+  lista[dateKey(new Date(ano,10,2))]  = 'Finados';
+  lista[dateKey(new Date(ano,10,6))]  = 'Aniversário de Poços de Caldas (municipal)';
+  lista[dateKey(new Date(ano,10,15))] = 'Proclamação da República';
+  lista[dateKey(new Date(ano,10,20))] = 'Consciência Negra';
+  lista[dateKey(new Date(ano,11,25))] = 'Natal';
+  return lista;
+}
+
+// Cache de feriados por ano, calculados sob demanda (funciona para qualquer ano)
+const FERIADOS_CACHE = {};
+function feriadoNaData(date){
+  const ano = date.getFullYear();
+  if(!FERIADOS_CACHE[ano]) FERIADOS_CACHE[ano] = feriadosDoAno(ano);
+  return FERIADOS_CACHE[ano][dateKey(date)] || null;
+}
+
+function dateKey(date){
+  const y = date.getFullYear();
+  const m = String(date.getMonth()+1).padStart(2,'0');
+  const d = String(date.getDate()).padStart(2,'0');
+  return `${y}-${m}-${d}`;
+}
+
+// ---------- escala fixa real 2026 (fonte: planilha Excel "Escalas_2026_fixo_Portal.xlsx", aba "4 Turmas FIXO - Geral") ----------
+// cada número é o dia do mês em que aquele número (turma) trabalha; os demais dias do mês são folga
+const ESCALA_2026 = {
+  "Jan":{"1":[1,2,3,4,5,8,9,10,11,12,13,16,17,18,19,20,21,24,25,26,27,28,29],"2":[2,3,4,5,6,7,10,11,12,13,14,15,18,19,20,21,22,23,26,27,28,29,30,31],"3":[1,4,5,6,7,8,9,12,13,14,15,16,17,20,21,22,23,24,25,28,29,30,31],"4":[1,2,3,6,7,8,9,10,11,14,15,16,17,18,19,22,23,24,25,26,27,30,31]},
+  "Fev":{"1":[1,2,3,4,5,6,9,10,11,12,13,14,17,18,19,20,21,22,25,26,27,28],"2":[3,4,5,6,7,8,11,12,13,14,15,16,19,20,21,22,23,24,27,28],"3":[1,2,5,6,7,8,9,10,13,14,15,16,17,18,21,22,23,24,25,26],"4":[1,2,3,4,7,8,9,10,11,12,15,16,17,18,19,20,23,24,25,26,27,28]},
+  "Mar":{"1":[1,2,5,6,7,8,9,10,13,14,15,16,17,18,21,22,23,24,25,26,29,30,31],"2":[1,2,3,4,7,8,9,10,11,12,15,16,17,18,19,20,23,24,25,26,27,28,31],"3":[1,2,3,4,5,6,9,10,11,12,13,14,17,18,19,20,21,22,25,26,27,28,29,30],"4":[3,4,5,6,7,8,11,12,13,14,15,16,19,20,21,22,23,24,27,28,29,30,31]},
+  "Abr":{"1":[1,2,3,6,7,8,9,10,11,14,15,16,17,18,19,22,23,24,25,26,27,30],"2":[1,2,3,4,5,8,9,10,11,12,13,16,17,18,19,20,21,24,25,26,27,28,29],"3":[2,3,4,5,6,7,10,11,12,13,14,15,18,19,20,21,22,23,26,27,28,29,30],"4":[1,4,5,6,7,8,9,12,13,14,15,16,17,20,21,22,23,24,25,28,29,30]},
+  "Mai":{"1":[1,2,3,4,5,8,9,10,11,12,13,16,17,18,19,20,21,24,25,26,27,28,29],"2":[2,3,4,5,6,7,10,11,12,13,14,15,18,19,20,21,22,23,26,27,28,29,30,31],"3":[1,4,5,6,7,8,9,12,13,14,15,16,17,20,21,22,23,24,25,28,29,30,31],"4":[1,2,3,6,7,8,9,10,11,14,15,16,17,18,19,22,23,24,25,26,27,30,31]},
+  "Jun":{"1":[1,2,3,4,5,6,9,10,11,12,13,14,17,18,19,20,21,22,25,26,27,28,29,30],"2":[3,4,5,6,7,8,11,12,13,14,15,16,19,20,21,22,23,24,27,28,29,30],"3":[1,2,5,6,7,8,9,10,13,14,15,16,17,18,21,22,23,24,25,26,29,30],"4":[1,2,3,4,7,8,9,10,11,12,15,16,17,18,19,20,23,24,25,26,27,28]},
+  "Jul":{"1":[3,4,5,6,7,8,11,12,13,14,15,16,19,20,21,22,23,24,27,28,29,30,31],"2":[1,2,5,6,7,8,9,10,13,14,15,16,17,18,21,22,23,24,25,26,29,30,31],"3":[1,2,3,4,7,8,9,10,11,12,15,16,17,18,19,20,23,24,25,26,27,28,31],"4":[1,2,3,4,5,6,9,10,11,12,13,14,17,18,19,20,21,22,25,26,27,28,29,30]},
+  "Ago":{"1":[1,4,5,6,7,8,9,12,13,14,15,16,17,20,21,22,23,24,25,28,29,30,31],"2":[1,2,3,6,7,8,9,10,11,14,15,16,17,18,19,22,23,24,25,26,27,30,31],"3":[1,2,3,4,5,8,9,10,11,12,13,16,17,18,19,20,21,24,25,26,27,28,29],"4":[2,3,4,5,6,7,10,11,12,13,14,15,18,19,20,21,22,23,26,27,28,29,30,31]},
+  "Set":{"1":[1,2,5,6,7,8,9,10,13,14,15,16,17,18,21,22,23,24,25,26,29,30],"2":[1,2,3,4,7,8,9,10,11,12,15,16,17,18,19,20,23,24,25,26,27,28],"3":[1,2,3,4,5,6,9,10,11,12,13,14,17,18,19,20,21,22,25,26,27,28,29,30],"4":[3,4,5,6,7,8,11,12,13,14,15,16,19,20,21,22,23,24,27,28,29,30]},
+  "Out":{"1":[1,2,3,4,7,8,9,10,11,12,15,16,17,18,19,20,23,24,25,26,27,28,31],"2":[1,2,3,4,5,6,9,10,11,12,13,14,17,18,19,20,21,22,25,26,27,28,29,30],"3":[3,4,5,6,7,8,11,12,13,14,15,16,19,20,21,22,23,24,27,28,29,30,31],"4":[1,2,5,6,7,8,9,10,13,14,15,16,17,18,21,22,23,24,25,26,29,30,31]},
+  "Nov":{"1":[1,2,3,4,5,8,9,10,11,12,13,16,17,18,19,20,21,24,25,26,27,28,29],"2":[2,3,4,5,6,7,10,11,12,13,14,15,18,19,20,21,22,23,26,27,28,29,30],"3":[1,4,5,6,7,8,9,12,13,14,15,16,17,20,21,22,23,24,25,28,29,30],"4":[1,2,3,6,7,8,9,10,11,14,15,16,17,18,19,22,23,24,25,26,27,30]},
+  "Dez":{"1":[2,3,4,5,6,7,10,11,12,13,14,15,18,19,20,21,22,23,26,27,28,29,30,31],"2":[1,4,5,6,7,8,9,12,13,14,15,16,17,20,21,22,23,24,25,28,29,30,31],"3":[1,2,3,6,7,8,9,10,11,14,15,16,17,18,19,22,23,24,25,26,27,30,31],"4":[1,2,3,4,5,8,9,10,11,12,13,16,17,18,19,20,21,24,25,26,27,28,29]}
+};
+const ESCALA_MESES = ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"];
+
+function cycleInfo(date, turma){
+  const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  const info = (d.getFullYear() === 2026)
+    ? infoDaEscalaReal(d, turma)
+    : infoDoCicloGenerico(d, turma);
+  info.feriado = feriadoNaData(d);
+  info.data = d;
+  return info;
+}
+
+// escala real (2026), vinda direto da planilha do Excel
+function infoDaEscalaReal(d, turma){
+  const mesNome = ESCALA_MESES[d.getMonth()];
+  const diasTrabalho = ESCALA_2026[mesNome][String(turma)];
+  const trabalha = diasTrabalho.includes(d.getDate());
+  return trabalha ? {status:'trabalho'} : {status:'folga'};
+}
+
+// fórmula genérica de ciclo 6x2, usada como aproximação pra anos fora de 2026 (sem dado real do Excel ainda)
+function infoDoCicloGenerico(d, turma){
+  const diffDays = Math.round((d - ANCHOR) / 86400000);
+  const offset = (turma - 1) * 2; // cada turma seguinte inicia a folga 2 dias depois da anterior
+  let pos = ((ANCHOR_POS_C1 - 1 + diffDays - offset) % 8 + 8) % 8 + 1;
+  return pos <= 6 ? {status:'trabalho', dayNum:pos, total:6} : {status:'folga', dayNum:pos-6, total:2};
+}
+
+// Previsão do tempo (Open-Meteo, Poços de Caldas-MG). Sem chave de API, atualiza a cada carregamento.
+const CLIMA_LAT = -21.7875, CLIMA_LON = -46.5686;
+let CLIMA_CACHE = {}; // { 'YYYY-MM-DD': {codigo, max, min} }
+let CLIMA_CARREGADO = false;
+
+function climaIcone(codigo){
+  if(codigo === 0) return '☀️';
+  if([1,2].includes(codigo)) return '🌤️';
+  if(codigo === 3) return '☁️';
+  if([45,48].includes(codigo)) return '🌫️';
+  if([51,53,55,56,57].includes(codigo)) return '🌦️';
+  if([61,63,65,66,67,80,81,82].includes(codigo)) return '🌧️';
+  if([71,73,75,77,85,86].includes(codigo)) return '🌨️';
+  if([95,96,99].includes(codigo)) return '⛈️';
+  return '⛅';
+}
+
+function climaDescricao(codigo){
+  if(codigo === 0) return 'Céu limpo';
+  if([1,2].includes(codigo)) return 'Poucas nuvens';
+  if(codigo === 3) return 'Nublado';
+  if([45,48].includes(codigo)) return 'Neblina';
+  if([51,53,55,56,57].includes(codigo)) return 'Garoa';
+  if([61,63,65,66,67,80,81,82].includes(codigo)) return 'Chuva';
+  if([71,73,75,77,85,86].includes(codigo)) return 'Neve';
+  if([95,96,99].includes(codigo)) return 'Tempestade';
+  return 'Parcialmente nublado';
+}
+
+async function carregarPrevisao(){
+  try{
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${CLIMA_LAT}&longitude=${CLIMA_LON}&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=America%2FSao_Paulo&forecast_days=7`;
+    const res = await fetch(url);
+    const data = await res.json();
+    const dias = data.daily.time;
+    CLIMA_CACHE = {};
+    dias.forEach((iso, idx)=>{
+      CLIMA_CACHE[iso] = {
+        codigo: data.daily.weathercode[idx],
+        max: Math.round(data.daily.temperature_2m_max[idx]),
+        min: Math.round(data.daily.temperature_2m_min[idx])
+      };
+    });
+    CLIMA_CARREGADO = true;
+    renderCalendar();
+    if(diaSelecionado) mostrarDetalhe(diaSelecionado);
+  }catch(e){
+    CLIMA_CARREGADO = false;
+  }
+}
+
+// Atualiza a previsão sozinha: a cada 30 min com o app aberto, e sempre que o app volta a ficar visível
+setInterval(carregarPrevisao, 30 * 60 * 1000);
+document.addEventListener('visibilitychange', ()=>{
+  if(document.visibilityState === 'visible') carregarPrevisao();
+});
+
+const TURMA_STORAGE_KEY = 'escala6x2_turma_selecionada';
+const TURNO_STORAGE_KEY = 'escala6x2_turno_selecionado';
+const TEMA_STORAGE_KEY = 'escala6x2_tema_selecionado';
+const FUNDO_STORAGE_KEY = 'escala6x2_fundo_selecionado';
+const TURNO_HORARIOS = {A:'22:50 - 07:10', B:'06:50 - 15:10', C:'14:50 - 23:10'};
+const NOTA_STORAGE_PREFIX = 'escala6x2_nota_';
+const FOTO_STORAGE_PREFIX = 'escala6x2_foto_';
+const OBS_STORAGE_PREFIX = 'escala6x2_obs_';
+
+function aplicarTemaFundo(tema, fundo){
+  document.body.setAttribute('data-tema', tema);
+  document.body.setAttribute('data-fundo', fundo);
+  document.getElementById('fundoToggle').textContent = fundo === 'noite' ? '🌙' : '☀️';
+}
+
+function turnoAtual(){
+  return document.getElementById('turno').value;
+}
+function atualizarHorarioInfo(){
+  const t = turnoAtual();
+  document.getElementById('horarioInfo').textContent = 'Turno ' + t + ' · ' + TURNO_HORARIOS[t];
+}
+
+function turmaAtual(){
+  return parseInt(document.getElementById('turma').value, 10);
+}
+
+// Guarda uma LISTA de observações por dia (cada uma com texto e foto opcional).
+// Se existir dado do formato antigo (uma nota + uma foto por dia), migra automaticamente na primeira leitura.
+function lerObservacoes(key){
+  try{
+    const bruto = localStorage.getItem(OBS_STORAGE_PREFIX + key);
+    if(bruto) return JSON.parse(bruto);
+  }catch(e){}
+  try{
+    const textoAntigo = localStorage.getItem(NOTA_STORAGE_PREFIX + key);
+    const fotoAntiga = localStorage.getItem(FOTO_STORAGE_PREFIX + key);
+    if(textoAntigo || fotoAntiga){
+      const migrada = [{id: 'm' + Date.now(), texto: textoAntigo || '', foto: fotoAntiga || null}];
+      salvarObservacoes(key, migrada);
+      localStorage.removeItem(NOTA_STORAGE_PREFIX + key);
+      localStorage.removeItem(FOTO_STORAGE_PREFIX + key);
+      return migrada;
+    }
+  }catch(e){}
+  return [];
+}
+
+function salvarObservacoes(key, lista){
+  try{
+    if(!lista || lista.length === 0){ localStorage.removeItem(OBS_STORAGE_PREFIX + key); }
+    else{ localStorage.setItem(OBS_STORAGE_PREFIX + key, JSON.stringify(lista)); }
+    return true;
+  }catch(e){ return false; }
+}
+
+// Reduz a foto (redimensiona e comprime) antes de guardar, pra caber no espaço limitado do navegador
+function comprimirImagem(file, maxDim, qualidade){
+  const trabalho = new Promise((resolve, reject)=>{
+    const reader = new FileReader();
+    reader.onload = (e)=>{
+      const img = new Image();
+      img.onload = ()=>{
+        let w = img.width, h = img.height;
+        if(w > maxDim || h > maxDim){
+          if(w > h){ h = Math.round(h * maxDim / w); w = maxDim; }
+          else{ w = Math.round(w * maxDim / h); h = maxDim; }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', qualidade));
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+  const tempoLimite = new Promise((_, reject)=> setTimeout(()=> reject(new Error('tempo esgotado')), 8000));
+  return Promise.race([trabalho, tempoLimite]);
+}
+
+function escapeHtml(str){
+  return str.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function buscarProximosAvisos(diasLimite, maxItens){
+  const hoje = new Date(); hoje.setHours(0,0,0,0);
+  const lista = [];
+  try{
+    for(let i=0;i<localStorage.length;i++){
+      const key = localStorage.key(i);
+      if(!key || !key.startsWith(OBS_STORAGE_PREFIX)) continue;
+      const partes = key.slice(OBS_STORAGE_PREFIX.length).split('-');
+      if(partes.length !== 3) continue;
+      const data = new Date(parseInt(partes[0],10), parseInt(partes[1],10)-1, parseInt(partes[2],10));
+      const diffDias = Math.round((data - hoje) / 86400000);
+      if(diffDias < 0 || diffDias > diasLimite) continue;
+      let observacoes = [];
+      try{ observacoes = JSON.parse(localStorage.getItem(key)) || []; }catch(e){ continue; }
+      const comTexto = observacoes.filter(o => o.texto && o.texto.trim() !== '');
+      if(comTexto.length === 0) continue;
+      const extras = comTexto.length - 1;
+      const texto = comTexto[0].texto + (extras > 0 ? ` (+${extras} ${extras>1?'observações':'observação'})` : '');
+      lista.push({diffDias, data, texto});
+    }
+  }catch(e){}
+  lista.sort((a,b)=> a.diffDias - b.diffDias);
+  return lista.slice(0, maxItens);
+}
+
+function ehHoje(date){
+  if(!date) return false;
+  const hoje = new Date();
+  return date.toDateString() === hoje.toDateString();
+}
+
+function renderAvisoFooter(){
+  const el = document.getElementById('avisoFooter');
+  if(!el) return;
+  if(!ehHoje(diaSelecionado)){ el.innerHTML = ''; return; }
+  const avisos = buscarProximosAvisos(5, 2);
+  if(avisos.length === 0){ el.innerHTML = ''; return; }
+  el.innerHTML = avisos.map((aviso, idx) => {
+    const dataTexto = aviso.data.toLocaleDateString('pt-BR', {day:'2-digit', month:'long'});
+    return `<button type="button" class="aviso-banner" data-idx="${idx}"><span class="aviso-icone">📌</span><span>${dataTexto}: "${escapeHtml(aviso.texto)}"</span></button>`;
+  }).join('');
+  el.querySelectorAll('.aviso-banner').forEach(btn => {
+    btn.addEventListener('click', ()=>{
+      const aviso = avisos[parseInt(btn.dataset.idx, 10)];
+      irParaDia(aviso.data);
+    });
+  });
+}
+
+function irParaDia(date){
+  viewYear = date.getFullYear();
+  viewMonth = date.getMonth();
+  diaSelecionado = date;
+  renderCalendar();
+  mostrarDetalhe(date);
+  const detalheEl = document.getElementById('detalhe');
+  if(detalheEl) detalheEl.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function limparDetalhe(){
+  const detalhe = document.getElementById('detalhe');
+  detalhe.className = 'card detalhe';
+  detalhe.innerHTML = '<div class="vazio">Toque em um dia para ver os detalhes</div>';
+}
+
+function primeiroDiaComNotaNoMes(ano, mes){
+  const daysInMonth = new Date(ano, mes+1, 0).getDate();
+  for(let day=1; day<=daysInMonth; day++){
+    const date = new Date(ano, mes, day);
+    if(lerObservacoes(dateKey(date)).length > 0) return date;
+  }
+  return null;
+}
+
+function aoEntrarNoMes(){
+  const achado = primeiroDiaComNotaNoMes(viewYear, viewMonth);
+  if(achado){
+    diaSelecionado = achado;
+    mostrarDetalhe(achado);
+  }else{
+    diaSelecionado = null;
+    limparDetalhe();
+  }
+  renderAvisoFooter();
+}
+
+function mostrarDetalhe(date){
+  const info = cycleInfo(date, turmaAtual());
+  const key = dateKey(date);
+  if(obsDiaAtualKey !== key){
+    obsEditandoId = null;
+    obsConfirmandoExclusaoId = null;
+    arquivoAnexado = null;
+  }
+  obsDiaAtualKey = key;
+  const detalhe = document.getElementById('detalhe');
+  const dataCompleta = date.toLocaleDateString('pt-BR',{weekday:'long', day:'2-digit', month:'long', year:'numeric'});
+  const dataCurta = date.toLocaleDateString('pt-BR',{day:'2-digit', month:'long', year:'numeric'});
+  const clima = CLIMA_CACHE[key];
+  const climaHtml = clima
+    ? `<div class="clima">
+         <span class="clima-ico-grande">${climaIcone(clima.codigo)}</span>
+         <div>
+           <div class="clima-temp">${clima.min}° / ${clima.max}°</div>
+           <div class="clima-desc">${climaDescricao(clima.codigo)}</div>
+         </div>
+       </div>`
+    : (CLIMA_CARREGADO ? `<div class="clima-indisponivel">Previsão só disponível para os próximos 7 dias</div>` : '');
+  detalhe.className = 'card detalhe ' + info.status;
+  detalhe.innerHTML = `
+    <div class="valor ${info.status}">${info.status === 'trabalho' ? 'TRABALHO' : 'FOLGA'}</div>
+    <div class="sub">${info.dayNum ? ('Dia ' + info.dayNum + ' de ' + info.total + ' · ') : ''}${dataCompleta}</div>
+    ${info.feriado ? `<div class="feriado-nome">Feriado: ${info.feriado}</div>` : ''}
+    ${climaHtml}
+    ${renderObsSecaoHtml(key, dataCurta)}
+  `;
+  bindObsEventos(date);
+}
+
+function renderObsItemHtml(o){
+  return `
+    <div class="obs-item">
+      ${o.texto ? `<div class="obs-texto">${escapeHtml(o.texto)}</div>` : ''}
+      ${o.foto ? `<img class="obs-foto" src="${o.foto}" alt="Foto anexada">` : ''}
+      <div class="obs-acoes">
+        <button type="button" data-action="editar" data-id="${o.id}">✏️ Editar</button>
+        <button type="button" data-action="compartilhar" data-id="${o.id}">📤 Compartilhar</button>
+        <button type="button" class="btn-excluir" data-action="excluir" data-id="${o.id}">🗑️ Excluir</button>
+      </div>
+    </div>`;
+}
+
+function renderObsConfirmarExclusaoHtml(o){
+  return `
+    <div class="obs-item obs-confirmar">
+      ${o.texto ? `<div class="obs-texto">${escapeHtml(o.texto)}</div>` : ''}
+      <div class="obs-confirmar-texto">Excluir essa observação? Não tem como desfazer.</div>
+      <div class="obs-acoes">
+        <button type="button" class="btn-excluir" data-action="confirmar-excluir" data-id="${o.id}">Sim, excluir</button>
+        <button type="button" data-action="cancelar-excluir" data-id="${o.id}">Cancelar</button>
+      </div>
+    </div>`;
+}
+
+function renderObsFormHtml(o){
+  const id = o ? o.id : 'novo';
+  const textoAtual = o ? escapeHtml(o.texto) : '';
+  const previewSrc = arquivoAnexado ? URL.createObjectURL(arquivoAnexado) : (o && o.foto ? o.foto : '');
+  const anexoInfo = arquivoAnexado ? ('📎 ' + arquivoAnexado.name) : (o && o.foto ? '📎 Foto atual (escolha outra pra trocar)' : '');
+  return `
+    <div class="obs-item obs-editando">
+      <textarea class="obs-texto-input" id="obsTexto_${id}" placeholder="Ex: troquei o plantão com fulano...">${textoAtual}</textarea>
+      <div class="nota-anexo">
+        <input type="file" class="obs-arquivo-input" id="obsArquivo_${id}" accept="image/*" hidden>
+        <button type="button" data-action="anexar" data-id="${id}">📎 Anexar foto</button>
+      </div>
+      <div class="anexo-nome" id="obsAnexoNome_${id}">${anexoInfo}</div>
+      <img class="obs-foto" id="obsPreview_${id}" src="${previewSrc}" alt="Prévia da foto" ${previewSrc ? '' : 'style="display:none"'}>
+      <div class="nota-acoes">
+        <button type="button" class="btn-salvar" data-action="salvar-item" data-id="${id}">SALVAR</button>
+        <button type="button" class="btn-limpar" data-action="cancelar-item" data-id="${id}">CANCELAR</button>
+      </div>
+    </div>`;
+}
+
+function renderObsSecaoHtml(key, dataCurta){
+  const lista = lerObservacoes(key);
+  let itens = '';
+  if(lista.length === 0 && obsEditandoId !== 'novo'){
+    itens = '<div class="obs-vazio">Nenhuma observação neste dia.</div>';
+  }else{
+    itens = lista.map(o => {
+      if(obsEditandoId === o.id) return renderObsFormHtml(o);
+      if(obsConfirmandoExclusaoId === o.id) return renderObsConfirmarExclusaoHtml(o);
+      return renderObsItemHtml(o);
+    }).join('');
+  }
+  const formNovo = obsEditandoId === 'novo' ? renderObsFormHtml(null) : '';
+  const btnNova = obsEditandoId === null ? `<button type="button" class="btn-nova-obs" data-action="nova">➕ Nova observação</button>` : '';
+  return `
+    <div class="obs-secao">
+      <div class="obs-titulo">Observações · ${dataCurta}</div>
+      ${itens}
+      ${formNovo}
+      ${btnNova}
+      <div class="salvo-msg" id="notaSalvoMsg"></div>
+    </div>`;
+}
+
+async function dataUrlParaArquivo(dataUrl, nomeArquivo){
+  const res = await fetch(dataUrl);
+  const blob = await res.blob();
+  return new File([blob], nomeArquivo, {type: blob.type});
+}
+
+async function compartilharObs(mensagem, fotoDataUrl){
+  const msgEl = document.getElementById('notaSalvoMsg');
+  if(!navigator.share){
+    try{ await navigator.clipboard.writeText(mensagem); if(msgEl) msgEl.textContent = 'Compartilhamento não é suportado aqui — mensagem copiada.'; }catch(e){}
+    return;
+  }
+  if(fotoDataUrl){
+    try{
+      const arquivo = await dataUrlParaArquivo(fotoDataUrl, 'foto.jpg');
+      await navigator.share({text: mensagem, files: [arquivo]});
+      return;
+    }catch(e){
+      if(e && e.name === 'AbortError') return;
+    }
+  }
+  try{
+    await navigator.share({text: mensagem});
+    if(fotoDataUrl && msgEl) msgEl.textContent = 'Esse celular não deixa mandar a foto pelo compartilhar — só a mensagem foi enviada.';
+  }catch(e){}
+}
+
+function bindObsEventos(date){
+  const key = dateKey(date);
+  const secao = document.querySelector('.obs-secao');
+  if(!secao) return;
+  secao.addEventListener('change', (e)=>{
+    if(e.target.matches('.obs-arquivo-input')){
+      const id = e.target.id.replace('obsArquivo_', '');
+      arquivoAnexado = e.target.files && e.target.files[0] ? e.target.files[0] : null;
+      const nomeEl = document.getElementById('obsAnexoNome_' + id);
+      const previewEl = document.getElementById('obsPreview_' + id);
+      if(nomeEl) nomeEl.textContent = arquivoAnexado ? ('📎 ' + arquivoAnexado.name) : '';
+      if(previewEl){
+        if(arquivoAnexado){
+          previewEl.src = URL.createObjectURL(arquivoAnexado);
+          previewEl.style.display = '';
+        }else{
+          previewEl.style.display = 'none';
+        }
+      }
+    }
+  });
+  secao.addEventListener('click', async (e)=>{
+    const btn = e.target.closest('[data-action]');
+    if(!btn) return;
+    const action = btn.dataset.action;
+    const id = btn.dataset.id;
+    if(action === 'nova'){
+      obsEditandoId = 'novo';
+      arquivoAnexado = null;
+      mostrarDetalhe(date);
+    }else if(action === 'editar'){
+      obsEditandoId = id;
+      arquivoAnexado = null;
+      mostrarDetalhe(date);
+    }else if(action === 'cancelar-item'){
+      obsEditandoId = null;
+      arquivoAnexado = null;
+      mostrarDetalhe(date);
+    }else if(action === 'excluir'){
+      obsConfirmandoExclusaoId = id;
+      mostrarDetalhe(date);
+    }else if(action === 'cancelar-excluir'){
+      obsConfirmandoExclusaoId = null;
+      mostrarDetalhe(date);
+    }else if(action === 'confirmar-excluir'){
+      const listaAtual = lerObservacoes(key).filter(o => o.id !== id);
+      salvarObservacoes(key, listaAtual);
+      obsConfirmandoExclusaoId = null;
+      renderCalendar();
+      renderAvisoFooter();
+      mostrarDetalhe(date);
+    }else if(action === 'anexar'){
+      const inputEl = document.getElementById('obsArquivo_' + id);
+      if(inputEl) inputEl.click();
+    }else if(action === 'salvar-item'){
+      const textarea = document.getElementById('obsTexto_' + id);
+      const texto = textarea ? textarea.value : '';
+      let listaAtual = lerObservacoes(key);
+      const existente = listaAtual.find(o => o.id === id);
+      let fotoFinal = existente ? (existente.foto || null) : null;
+      const msgEl = document.getElementById('notaSalvoMsg');
+      let avisoFoto = '';
+      if(arquivoAnexado){
+        try{ fotoFinal = await comprimirImagem(arquivoAnexado, 900, 0.6); }
+        catch(err){ fotoFinal = existente ? (existente.foto || null) : null; avisoFoto = ' Não deu pra processar a foto — salvei sem ela.'; }
+      }
+      const montarLista = (foto) => id === 'novo'
+        ? [...listaAtual, {id: 'o' + Date.now(), texto, foto}]
+        : listaAtual.map(o => o.id === id ? {...o, texto, foto} : o);
+      let ok = salvarObservacoes(key, montarLista(fotoFinal));
+      if(!ok && fotoFinal){
+        // não coube com a foto — tenta salvar só o texto, sem perder o que foi escrito
+        ok = salvarObservacoes(key, montarLista(null));
+        avisoFoto = ' Sem espaço no navegador pra guardar a foto — salvei só o texto.';
+      }
+      if(ok){
+        obsEditandoId = null;
+        arquivoAnexado = null;
+        renderCalendar();
+        renderAvisoFooter();
+        mostrarDetalhe(date);
+      }else if(msgEl){
+        msgEl.textContent = 'Não deu pra salvar — sem espaço no navegador.';
+      }
+      if(ok && avisoFoto){
+        setTimeout(()=>{ const m = document.getElementById('notaSalvoMsg'); if(m) m.textContent = ('Observação salva.' + avisoFoto); }, 0);
+      }
+    }else if(action === 'compartilhar'){
+      const listaAtual = lerObservacoes(key);
+      const item = listaAtual.find(o => o.id === id);
+      if(!item) return;
+      const dataCurta = date.toLocaleDateString('pt-BR',{day:'2-digit', month:'long', year:'numeric'});
+      const mensagem = `${dataCurta}${item.texto ? ' — ' + item.texto : ''}`;
+      await compartilharObs(mensagem, item.foto);
+    }
+  });
+}
+let arquivoAnexado = null;
+let obsEditandoId = null;
+let obsConfirmandoExclusaoId = null;
+let obsDiaAtualKey = null;
+let viewYear, viewMonth, diaSelecionado = null;
+function renderCalendar(){
+  const turma = turmaAtual();
+  const title = document.getElementById('calTitle');
+  const grid = document.getElementById('calGrid');
+  title.textContent = (diaSelecionado && diaSelecionado.getMonth() === viewMonth && diaSelecionado.getFullYear() === viewYear)
+    ? diaSelecionado.toLocaleDateString('pt-BR', {day:'2-digit', month:'long', year:'numeric'})
+    : new Date(viewYear, viewMonth, 1).toLocaleDateString('pt-BR', {month:'long', year:'numeric'});
+  grid.innerHTML = '';
+
+  ['D','S','T','Q','Q','S','S'].forEach(d=>{
+    const el = document.createElement('div');
+    el.className = 'cal-dow';
+    el.textContent = d;
+    grid.appendChild(el);
+  });
+
+  const firstDay = new Date(viewYear, viewMonth, 1).getDay();
+  const daysInMonth = new Date(viewYear, viewMonth+1, 0).getDate();
+  const today = new Date();
+
+  for(let i=0;i<firstDay;i++){
+    const empty = document.createElement('div');
+    empty.className = 'cal-day empty';
+    grid.appendChild(empty);
+  }
+
+  for(let day=1; day<=daysInMonth; day++){
+    const date = new Date(viewYear, viewMonth, day);
+    const info = cycleInfo(date, turma);
+    const el = document.createElement('div');
+    el.className = 'cal-day ' + info.status;
+    if(info.feriado) el.classList.add('feriado');
+    if(lerObservacoes(dateKey(date)).length > 0) el.classList.add('com-nota');
+    if(date.toDateString() === today.toDateString()) el.classList.add('hoje');
+    if(diaSelecionado && date.toDateString() === diaSelecionado.toDateString()) el.classList.add('selecionado');
+    el.textContent = day;
+    const climaDia = CLIMA_CACHE[dateKey(date)];
+    if(climaDia){
+      const ico = document.createElement('span');
+      ico.className = 'clima-ico';
+      ico.textContent = climaIcone(climaDia.codigo);
+      el.appendChild(ico);
+    }
+    el.addEventListener('click', ()=>{
+      diaSelecionado = date;
+      mostrarDetalhe(date);
+      renderCalendar();
+      renderAvisoFooter();
+    });
+    grid.appendChild(el);
+  }
+}
+
+document.getElementById('turma').addEventListener('change', ()=>{
+  try{ localStorage.setItem(TURMA_STORAGE_KEY, document.getElementById('turma').value); }catch(e){}
+  if(diaSelecionado) mostrarDetalhe(diaSelecionado);
+  renderCalendar();
+});
+document.getElementById('turno').addEventListener('change', ()=>{
+  try{ localStorage.setItem(TURNO_STORAGE_KEY, document.getElementById('turno').value); }catch(e){}
+  atualizarHorarioInfo();
+});
+document.getElementById('tema').addEventListener('change', ()=>{
+  const tema = document.getElementById('tema').value;
+  try{ localStorage.setItem(TEMA_STORAGE_KEY, tema); }catch(e){}
+  aplicarTemaFundo(tema, document.body.getAttribute('data-fundo'));
+});
+document.getElementById('fundoToggle').addEventListener('click', ()=>{
+  const atual = document.body.getAttribute('data-fundo');
+  const novo = atual === 'noite' ? 'dia' : 'noite';
+  try{ localStorage.setItem(FUNDO_STORAGE_KEY, novo); }catch(e){}
+  aplicarTemaFundo(document.body.getAttribute('data-tema'), novo);
+});
+document.getElementById('prevMonth').addEventListener('click', ()=>{
+  viewMonth--; if(viewMonth<0){viewMonth=11; viewYear--;}
+  aoEntrarNoMes();
+  renderCalendar();
+});
+document.getElementById('nextMonth').addEventListener('click', ()=>{
+  viewMonth++; if(viewMonth>11){viewMonth=0; viewYear++;}
+  aoEntrarNoMes();
+  renderCalendar();
+});
+
+// Restaura a turma e o turno salvos anteriormente
+try{
+  const salva = localStorage.getItem(TURMA_STORAGE_KEY);
+  if(salva) document.getElementById('turma').value = salva;
+}catch(e){}
+try{
+  const salvoTurno = localStorage.getItem(TURNO_STORAGE_KEY);
+  if(salvoTurno) document.getElementById('turno').value = salvoTurno;
+}catch(e){}
+let temaSalvo = 'petroleo', fundoSalvo = 'noite';
+try{
+  temaSalvo = localStorage.getItem(TEMA_STORAGE_KEY) || 'petroleo';
+  fundoSalvo = localStorage.getItem(FUNDO_STORAGE_KEY) || 'noite';
+  document.getElementById('tema').value = temaSalvo;
+}catch(e){}
+aplicarTemaFundo(temaSalvo, fundoSalvo);
+atualizarHorarioInfo();
+
+function limparFotosAntigas(diasLimite){
+  const hoje = new Date(); hoje.setHours(0,0,0,0);
+  try{
+    for(let i=0;i<localStorage.length;i++){
+      const key = localStorage.key(i);
+      if(!key || !key.startsWith(OBS_STORAGE_PREFIX)) continue;
+      const partes = key.slice(OBS_STORAGE_PREFIX.length).split('-');
+      if(partes.length !== 3) continue;
+      const data = new Date(parseInt(partes[0],10), parseInt(partes[1],10)-1, parseInt(partes[2],10));
+      const diffDias = Math.round((hoje - data) / 86400000);
+      if(diffDias <= diasLimite) continue;
+      let lista = [];
+      try{ lista = JSON.parse(localStorage.getItem(key)) || []; }catch(e){ continue; }
+      let mudou = false;
+      lista.forEach(o => { if(o.foto){ o.foto = null; mudou = true; } });
+      if(mudou) localStorage.setItem(key, JSON.stringify(lista));
+    }
+  }catch(e){}
+}
+
+const NOVIDADES_VERSAO = 'v18';
+const NOVIDADES_STORAGE_KEY = 'escala6x2_novidades_vistas';
+const NOVIDADES_LISTA = [
+  'App agora se chama <b>Calendário de Turnos Refusão</b>',
+  'Novo seletor de <b>Cor</b> com 6 temas (Original, Petróleo, Nórdica, Sálvia, Lavanda, Areia) + botão dia/noite 🌙☀️',
+  'Aviso no rodapé pra observações próximas, agora clicável — toque nele pra ir direto pro dia. Só aparece quando você está vendo o dia de hoje, pra não poluir a tela ao navegar por outros dias',
+  'Indicador de observação agora é um alfinete 📌',
+  'Previsão do tempo de 7 dias, atualizando sozinha',
+  'Agora dá pra ter <b>várias observações no mesmo dia</b> (cada uma com seu texto e foto)',
+  'Excluir uma observação agora pede confirmação antes, pra não apagar por engano',
+  'Dá pra anexar uma foto em cada observação e compartilhar tudo junto (texto + foto)',
+  'Fotos anexadas com mais de 60 dias são apagadas sozinhas pra não lotar o espaço do celular'
+];
+
+function mostrarNovidadesSeNecessario(){
+  let jaViu = null;
+  try{ jaViu = localStorage.getItem(NOVIDADES_STORAGE_KEY); }catch(e){}
+  if(jaViu === NOVIDADES_VERSAO) return;
+  const overlay = document.getElementById('novidadesOverlay');
+  const lista = document.getElementById('novidadesLista');
+  lista.innerHTML = NOVIDADES_LISTA.map(item => `<li>${item}</li>`).join('');
+  overlay.hidden = false;
+  document.getElementById('btnFecharNovidades').addEventListener('click', ()=>{
+    try{ localStorage.setItem(NOVIDADES_STORAGE_KEY, NOVIDADES_VERSAO); }catch(e){}
+    overlay.hidden = true;
+  }, {once:true});
+}
+
+const now = new Date();
+viewYear = now.getFullYear();
+viewMonth = now.getMonth();
+diaSelecionado = now;
+mostrarDetalhe(now);
+renderCalendar();
+renderAvisoFooter();
+carregarPrevisao();
+limparFotosAntigas(60);
+mostrarNovidadesSeNecessario();
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load', async ()=>{
+    try{
+      const reg = await navigator.serviceWorker.register('sw.js');
+      // Sempre checa por versão nova ao abrir o app, em vez de esperar o navegador decidir sozinho quando checar
+      reg.update();
+      let jaRecarregou = false;
+      navigator.serviceWorker.addEventListener('controllerchange', ()=>{
+        // assim que a versão nova assumir, recarrega automaticamente pra já mostrar ela nessa mesma abertura
+        if(jaRecarregou) return;
+        jaRecarregou = true;
+        window.location.reload();
+      });
+    }catch(e){}
+  });
+}
+</script>
+</body>
+</html>
